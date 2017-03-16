@@ -59,7 +59,9 @@
            test-connection-query
            idle-connection-test-period
            test-connection-on-checkin
-           test-connection-on-checkout]
+           test-connection-on-checkout
+           acquire-retry-attempts
+           acquire-retry-delay]
     :or {excess-timeout (* 30 60)
          idle-timeout (* 3 60 60)
          initial-pool-size 3
@@ -68,7 +70,9 @@
          test-connection-query nil
          idle-connection-test-period 0
          test-connection-on-checkin false
-         test-connection-on-checkout false}
+         test-connection-on-checkout false
+         acquire-retry-attempts 30
+         acquire-retry-delay 1000}
     :as spec}]
   (when-not c3p0-enabled?
     (throw (Exception. "com.mchange.v2.c3p0.ComboPooledDataSource not found in class path.")))
@@ -92,7 +96,9 @@
                  (.setIdleConnectionTestPeriod idle-connection-test-period)
                  (.setTestConnectionOnCheckin test-connection-on-checkin)
                  (.setTestConnectionOnCheckout test-connection-on-checkout)
-                 (.setPreferredTestQuery test-connection-query))})
+                 (.setPreferredTestQuery test-connection-query)
+                 (.setAcquireRetryAttempts acquire-retry-attempts)
+                 (.setAcquireRetryDelay acquire-retry-delay))})
 
 (defn delay-pool
   "Return a delay for creating a connection pool for the given spec."
@@ -118,7 +124,8 @@
                                        "sqlserver"   "com.microsoft.sqlserver.jdbc.SQLServerDriver"
                                        "odbc"        "sun.jdbc.odbc.JdbcOdbcDriver"
                                        "sqlite"      "org.sqlite.JDBC"
-                                       "h2"          "org.h2.Driver"})
+                                       "h2"          "org.h2.Driver"
+                                       "kylin"       "org.apache.kylin.jdbc.Driver"})
 
 (def ^:private subprotocol->options {"mysql" {:delimiters "`"}})
 
@@ -164,6 +171,17 @@
   (merge {:subprotocol "firebirdsql"
           :subname     (str host "/" port ":" db)
           :encoding    "UTF8"}
+         (dissoc opts :host :port :db)))
+
+(defn kylin
+  "Create a database specification for a kylin database. Opts should include
+  keys for :db, :user, and :password. You can also optionally set host and
+  port."
+  [{:keys [host port db]
+    :or {host "localhost", port 5432, db ""}
+    :as opts}]
+  (merge {:subprotocol "kylin"
+          :subname     (str "//" host ":" port "/" db)}
          (dissoc opts :host :port :db)))
 
 (defn postgres

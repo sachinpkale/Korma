@@ -10,7 +10,6 @@
                     korma.sql.utils]
           :src-dir-uri "https://github.com/korma/Korma/blob/master/"
           :src-linenum-anchor-prefix "L"}
-
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [com.mchange/c3p0 "0.9.5.2"]
                  [org.clojure/java.jdbc "0.6.1"]]
@@ -24,7 +23,8 @@
                    :plugins [[codox "0.8.12"]
                              [jonase/eastwood "0.2.1"]
                              [lein-localrepo "0.5.3"]]}
-             :test {:dependencies [[mysql/mysql-connector-java "5.1.35"]
+             :test {:plugins [[lein-cloverage "1.0.9"]]
+                    :dependencies [[mysql/mysql-connector-java "5.1.35"]
                                    [com.h2database/h2 "1.4.187"]
                                    [criterium "0.4.3"]]}
              :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}

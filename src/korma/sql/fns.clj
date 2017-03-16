@@ -15,19 +15,23 @@
 (defn pred-or [& args] (group-with " OR " args))
 (defn pred-not [v] (wrapper "NOT" v))
 
-(defn pred-in [k v]     (infix k "IN" v))
-(defn pred-not-in [k v] (infix k "NOT IN" v))
-(defn pred-> [k v]      (infix k ">" v))
-(defn pred-< [k v]      (infix k "<" v))
-(defn pred->= [k v]     (infix k ">=" v))
-(defn pred-<= [k v]     (infix k "<=" v))
-(defn pred-like [k v]   (infix k "LIKE" v))
-(defn pred-ilike [k v]  (infix k "ILIKE" v))
+(defn pred-in [k v]         (infix k "IN" v))
+(defn pred-not-in [k v]     (infix k "NOT IN" v))
+(defn pred-> [k v]          (infix k ">" v))
+(defn pred-< [k v]          (infix k "<" v))
+(defn pred->= [k v]         (infix k ">=" v))
+(defn pred-<= [k v]         (infix k "<=" v))
+(defn pred-like [k v]       (infix k "LIKE" v))
+(defn pred-ilike [k v]      (infix k "ILIKE" v))
+(defn pred-similar-to [k v] (infix k "SIMILAR TO" v))
 
 (defn pred-exists [v]   (wrapper "EXISTS" v))
 
 (defn pred-between [k [v1 v2]]
   (trinary k "BETWEEN" v1 "AND" v2))
+
+(defn pred-not-between [k [v1 v2]]
+  (trinary k "NOT BETWEEN" v1 "AND" v2))
 
 (def pred-= eng/pred-=)
 (defn pred-not= [k v] (cond
