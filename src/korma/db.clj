@@ -61,7 +61,9 @@
            test-connection-on-checkin
            test-connection-on-checkout
            acquire-retry-attempts
-           acquire-retry-delay]
+           acquire-retry-delay
+           acquire-increment
+           checkout-timeout]
     :or {excess-timeout (* 30 60)
          idle-timeout (* 3 60 60)
          initial-pool-size 3
@@ -72,7 +74,9 @@
          test-connection-on-checkin false
          test-connection-on-checkout false
          acquire-retry-attempts 30
-         acquire-retry-delay 1000}
+         acquire-retry-delay 1000
+         acquire-increment 3
+         checkout-timeout 0}
     :as spec}]
   (when-not c3p0-enabled?
     (throw (Exception. "com.mchange.v2.c3p0.ComboPooledDataSource not found in class path.")))
@@ -98,7 +102,9 @@
                  (.setTestConnectionOnCheckout test-connection-on-checkout)
                  (.setPreferredTestQuery test-connection-query)
                  (.setAcquireRetryAttempts acquire-retry-attempts)
-                 (.setAcquireRetryDelay acquire-retry-delay))})
+                 (.setAcquireRetryDelay acquire-retry-delay)
+                 (.setAcquireIncrement acquire-increment)
+                 (.setCheckoutTimeout checkout-timeout))})
 
 (defn delay-pool
   "Return a delay for creating a connection pool for the given spec."
